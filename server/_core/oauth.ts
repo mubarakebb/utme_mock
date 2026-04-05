@@ -2,7 +2,26 @@ import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
+import { ENV } from "./env";
 import { sdk } from "./sdk";
+
+function decodeReturnTo(state: string | undefined): string {
+  if (!state) return ENV.frontendUrl || "/";
+
+  try {
+    const parsed = JSON.parse(atob(state)) as { returnTo?: unknown };
+    if (typeof parsed.returnTo === "string" && parsed.returnTo.length > 0) {
+      const returnUrl = new URL(parsed.returnTo);
+      if (returnUrl.origin === ENV.frontendUrl) {
+        return returnUrl.toString();
+      }
+    }
+  } catch {
+    // Fall back to configured frontend URL below.
+  }
+
+  return ENV.frontendUrl || "/";
+}
 
 function getQueryParam(req: Request, key: string): string | undefined {
   const value = req.query[key];
@@ -44,7 +63,7 @@ export function registerOAuthRoutes(app: Express) {
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
-      res.redirect(302, "/");
+      res.redirect(302, decodeReturnTo(state));
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
       res.status(500).json({ error: "OAuth callback failed" });

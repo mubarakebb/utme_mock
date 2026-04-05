@@ -165,6 +165,7 @@ export async function getQuestionById(id: number) {
 }
 
 export async function createQuestion(data: {
+  subject: string;
   topic: string;
   difficulty: "easy" | "medium" | "hard";
   questionText: string;
@@ -180,6 +181,7 @@ export async function createQuestion(data: {
   if (!db) throw new Error("Database not available");
 
   const result = await db.insert(questions).values({
+    subject: data.subject,
     topic: data.topic,
     difficulty: data.difficulty,
     questionText: data.questionText,
@@ -198,6 +200,7 @@ export async function createQuestion(data: {
 export async function updateQuestion(
   id: number,
   data: {
+    subject?: string;
     topic?: string;
     difficulty?: "easy" | "medium" | "hard";
     questionText?: string;

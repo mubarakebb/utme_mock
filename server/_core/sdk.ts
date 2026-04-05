@@ -38,20 +38,12 @@ class OAuthService {
     }
   }
 
-  private decodeState(state: string): string {
-    const redirectUri = atob(state);
-    return redirectUri;
-  }
-
-  async getTokenByCode(
-    code: string,
-    state: string
-  ): Promise<ExchangeTokenResponse> {
+  async getTokenByCode(code: string): Promise<ExchangeTokenResponse> {
     const payload: ExchangeTokenRequest = {
       clientId: ENV.appId,
       grantType: "authorization_code",
       code,
-      redirectUri: this.decodeState(state),
+      redirectUri: ENV.oAuthCallbackUrl,
     };
 
     const { data } = await this.client.post<ExchangeTokenResponse>(
@@ -120,9 +112,9 @@ class SDKServer {
    */
   async exchangeCodeForToken(
     code: string,
-    state: string
+    _state: string
   ): Promise<ExchangeTokenResponse> {
-    return this.oauthService.getTokenByCode(code, state);
+    return this.oauthService.getTokenByCode(code);
   }
 
   /**

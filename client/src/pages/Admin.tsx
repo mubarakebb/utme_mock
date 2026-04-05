@@ -446,6 +446,7 @@ export default function Admin() {
 
         setEditingQuestionId(question.id);
         setFormState({
+            subject: question.subject,
             topic: question.topic,
             difficulty: question.difficulty,
             questionText: question.questionText,
@@ -490,6 +491,7 @@ export default function Admin() {
         event.preventDefault();
 
         const payload = {
+            subject: formState.subject.trim(),
             topic: formState.topic.trim(),
             difficulty: formState.difficulty,
             questionText: formState.questionText.trim(),
@@ -1607,7 +1609,7 @@ export default function Admin() {
                                                 {exam.subjectCounts && exam.subjectCounts.length > 0 ? (
                                                     <div className="flex flex-wrap gap-1">
                                                         {exam.subjectCounts.map((s, i) => (
-                                                            <span 
+                                                            <span
                                                                 key={i}
                                                                 className="inline-block px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-xs"
                                                             >

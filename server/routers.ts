@@ -44,6 +44,7 @@ const shuffleInPlace = <T,>(items: T[]): T[] => {
 };
 
 const questionPayloadSchema = z.object({
+  subject: z.string().min(1),
   topic: z.string().min(1),
   difficulty: z.enum(["easy", "medium", "hard"]),
   questionText: z.string().min(1),
@@ -57,6 +58,7 @@ const questionPayloadSchema = z.object({
 
 const questionUpdatePayloadSchema = z
   .object({
+    subject: z.string().min(1).optional(),
     topic: z.string().min(1).optional(),
     difficulty: z.enum(["easy", "medium", "hard"]).optional(),
     questionText: z.string().min(1).optional(),

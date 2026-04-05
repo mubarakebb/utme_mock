@@ -1,0 +1,10 @@
+{
+    "buildCommand": "pnpm run build:vercel",
+    "outputDirectory": "vercel-dist",
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
+        }
+    ]
+}

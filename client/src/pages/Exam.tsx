@@ -33,6 +33,7 @@ interface AvailableExam {
   availableAt: string | Date;
   questionIds: number[];
   subjectCounts: Array<{ subject: string; count: number }>;
+  groups?: Array<{ id: string; name: string }>;
   shuffleQuestionsPerUser: boolean;
 }
 
@@ -64,7 +65,7 @@ export default function Exam() {
 
   const configuredQuestionCount = selectedExam
     ? selectedExam.questionIds.length +
-      selectedExam.subjectCounts.reduce((sum, entry) => sum + entry.count, 0)
+    selectedExam.subjectCounts.reduce((sum, entry) => sum + entry.count, 0)
     : 0;
 
   // Redirect if not authenticated
@@ -268,7 +269,7 @@ export default function Exam() {
             {selectedExam?.description && (
               <p className="mt-2 text-xs text-muted-foreground">{selectedExam.description}</p>
             )}
-            
+
             {/* No exams available messaging */}
             {availableExamsQuery.isLoading === false && availableExams.length === 0 && (
               <div className="mt-4 p-4 rounded-lg bg-amber-500/10 border border-amber-500/30">
@@ -301,14 +302,14 @@ export default function Exam() {
                   <p className="text-lg font-bold text-white">{selectedExam.duration}m</p>
                 </div>
               </div>
-              
+
               {selectedExam.groups && selectedExam.groups.length > 0 && (
                 <div className="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3">
                   <p className="text-xs text-amber-300 font-medium mb-2">Group Requirements</p>
                   <div className="flex flex-wrap gap-2">
-                    {selectedExam.groups.map((group, idx) => (
-                      <span 
-                        key={idx} 
+                    {selectedExam.groups.map((group: { id: string; name: string }, idx: number) => (
+                      <span
+                        key={idx}
                         className="inline-block px-2 py-1 rounded text-xs bg-amber-500/20 text-amber-200 border border-amber-500/40"
                       >
                         {group.name}
@@ -448,15 +449,15 @@ export default function Exam() {
                   key={option.label}
                   onClick={() => handleSelectAnswer(option.label)}
                   className={`w-full p-4 rounded-lg border-2 transition-all text-left ${selectedAnswer === option.label
-                      ? "bg-cyan-500/20 border-cyan-500 text-white"
-                      : "bg-muted/30 border-border hover:border-cyan-500/50 text-foreground"
+                    ? "bg-cyan-500/20 border-cyan-500 text-white"
+                    : "bg-muted/30 border-border hover:border-cyan-500/50 text-foreground"
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-6 h-6 rounded-full border-2 flex items-center justify-center font-semibold ${selectedAnswer === option.label
-                          ? "bg-cyan-500 border-cyan-500 text-white"
-                          : "border-muted-foreground"
+                        ? "bg-cyan-500 border-cyan-500 text-white"
+                        : "border-muted-foreground"
                         }`}
                     >
                       {selectedAnswer === option.label && "✓"}
@@ -506,10 +507,10 @@ export default function Exam() {
                     key={index}
                     onClick={() => handleJumpToQuestion(index)}
                     className={`aspect-square rounded-lg font-semibold text-sm transition-all flex items-center justify-center ${isCurrentQuestion
-                        ? "bg-cyan-500 text-white border-2 border-cyan-300 scale-110"
-                        : status === "answered"
-                          ? "bg-green-500/30 text-green-300 border border-green-500/50 hover:bg-green-500/50"
-                          : "bg-muted/30 text-muted-foreground border border-border hover:bg-muted/50"
+                      ? "bg-cyan-500 text-white border-2 border-cyan-300 scale-110"
+                      : status === "answered"
+                        ? "bg-green-500/30 text-green-300 border border-green-500/50 hover:bg-green-500/50"
+                        : "bg-muted/30 text-muted-foreground border border-border hover:bg-muted/50"
                       }`}
                     title={`Question ${index + 1} - ${status}`}
                   >

@@ -4,8 +4,8 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 export const getLoginUrl = () => {
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL;
   const appId = import.meta.env.VITE_APP_ID;
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
-  const state = btoa(redirectUri);
+  const redirectUri = import.meta.env.VITE_OAUTH_CALLBACK_URL;
+  const state = btoa(JSON.stringify({ returnTo: window.location.origin }));
 
   const url = new URL(`${oauthPortalUrl}/app-auth`);
   url.searchParams.set("appId", appId);
@@ -15,3 +15,6 @@ export const getLoginUrl = () => {
 
   return url.toString();
 };
+
+export const getApiBaseUrl = () =>
+  import.meta.env.VITE_API_BASE_URL || window.location.origin;
